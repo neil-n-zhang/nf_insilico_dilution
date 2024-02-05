@@ -1,8 +1,8 @@
 /*
- * pipeline input parameters
+ * Get the reads number and reads length for each fastq file
  */
-params.path = "/Users/nzhang/Desktop/downsample/Sample1_1.fastq"
-params.outdir = "/Users/nzhang/Desktop/downsample"
+params.path = "./Sample1_1.fastq"
+params.outdir = "./output"
 
 
 process Readlength_Statistics {

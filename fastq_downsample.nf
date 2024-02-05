@@ -1,11 +1,14 @@
 /*
- * pipeline input parameters
+ * Downsample the fastq to contain a certain number of bases
+ * Need to perform adapter trimming after downsampling to make sure all reads still have the same length
  */
-params.R1 = "/Users/nzhang/Desktop/downsample/Sample1_1.fastq"
-params.R2 = "/Users/nzhang/Desktop/downsample/Sample1_2.fastq"
+params.R1 = "./Sample1_1.fastq"
+params.R2 = "./Sample1_2.fastq"
 params.dsbases = 10000
 
-params.outdir = "/Users/nzhang/Desktop/downsample"
+params.outdir = "./output"
+
+seqtk_path="/Users/nzhang/bioinfotools/seqtk/seqtk"
 
 include { Readlength_Statistics as Readlength_Statistics_R1 } from './readlen_stat.nf'
 include { Readlength_Statistics as Readlength_Statistics_R2 } from './readlen_stat.nf'
@@ -52,6 +55,7 @@ process Seqtk_downsample_R1 {
     output:
     path '*_ds_*fq'
 
+    // Shell block: it uses the exclamation mark ! character, instead of the usual dollar $ character, to denote Nextflow variables.
     shell:
     '''
     dsbases_int=$(echo "!{dsbases}/1" | bc) 
@@ -59,7 +63,7 @@ process Seqtk_downsample_R1 {
     output_fq_name=$(basename !{fastq_address}_ds_$dsbases_int.fq)
     # Celling of read number
     reads_number=$(awk "BEGIN { printf \\"%.2f\\", ($dsbases_int / 2 / $reads_length) }" | awk '{printf("%d",$0+=$0<0?0:0.999)}')
-    /Users/nzhang/bioinfotools/seqtk/seqtk sample -s100 !{fastq_address} $reads_number > $output_fq_name
+    "!{seqtk_path}" sample -s100 !{fastq_address} $reads_number > $output_fq_name
 
     '''
 }
@@ -83,7 +87,7 @@ process Seqtk_downsample_R2 {
     output_fq_name=$(basename !{fastq_address}_ds_$dsbases_int.fq)
     # Celling of read number
     reads_number=$(awk "BEGIN { printf \\"%.2f\\", ($dsbases_int / 2 / $reads_length) }" | awk '{printf("%d",$0+=$0<0?0:0.999)}')
-    /Users/nzhang/bioinfotools/seqtk/seqtk sample -s100 !{fastq_address} $reads_number > $output_fq_name
+    "!{seqtk_path}" sample -s100 !{fastq_address} $reads_number > $output_fq_name
 
     '''
 }
