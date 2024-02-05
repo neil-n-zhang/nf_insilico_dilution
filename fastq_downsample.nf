@@ -8,7 +8,7 @@ params.dsbases = 10000
 
 params.outdir = "./output"
 
-seqtk_path="/Users/nzhang/bioinfotools/seqtk/seqtk"
+seqtk_path=""
 
 include { Readlength_Statistics as Readlength_Statistics_R1 } from './readlen_stat.nf'
 include { Readlength_Statistics as Readlength_Statistics_R2 } from './readlen_stat.nf'
